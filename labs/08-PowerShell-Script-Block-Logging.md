@@ -20,6 +20,12 @@ Created the `NorthStar - PowerShell Logging` GPO and enabled:
 
 The GPO was linked to the **Domain Controllers** OU.
 
+## Security Baseline Review
+
+Downloaded and reviewed the Microsoft Windows Server 2022 Security Baseline package. Looked through the included documentation and Group Policy reports to understand the security settings recommended for Windows Server 2022.
+
+The full baseline was not imported or applied to the domain controller. Instead, PowerShell Script Block Logging was configured separately using the `NorthStar - PowerShell Logging` GPO.
+
 ## Verification
 
 Ran:
