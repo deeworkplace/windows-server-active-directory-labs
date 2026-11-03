@@ -31,7 +31,7 @@ Configured the following settings under:
 | Policy | Configuration |
 |---|---|
 | Enforce password history | 24 passwords |
-| Maximum password age | 0 days |
+| Maximum password age | Never expires (0 days) |
 | Minimum password age | 1 day |
 | Minimum password length | 14 characters |
 | Password must meet complexity requirements | Enabled |
@@ -53,6 +53,8 @@ Configured the following settings under:
 | Account lockout duration | 15 minutes |
 | Reset account lockout counter after | 15 minutes |
 
+![Account Lockout Policy Configuration](lab-11-account-lockout-policy.jpg)
+
 ## 4. Applied and Verified Group Policy
 
 Applied the updated Group Policy configuration using:
@@ -66,6 +68,8 @@ Verified the applied GPO using:
 Also used the following command to review the effective domain account policy:
 
 `net accounts /domain`
+
+![Effective Domain Password and Lockout Policy](lab-11-effective-domain-policy.jpg)
 
 ## 5. Created a Test Domain Account
 
@@ -98,11 +102,21 @@ Filtered for Event ID `4740`, which records account lockout events.
 
 Captured the event details associated with the `LabLockoutTest` account.
 
+![Account Lockout Event ID 4740](lab-11-account-lockout-event-4740.jpg)
+
 ## 8. Unlocked the Test Account
 
 After completing the lockout test, unlocked `LabLockoutTest` through Active Directory Users and Computers.
 
-The account was restored for future lab exercises.
+Steps performed:
+1. Opened Active Directory Users and Computers on WIN-SRV-DC01.
+2. Navigated to corp.northstar.local → NorthStar Users.
+3. Right-clicked LabLockoutTest and selected Properties.
+4. Opened the Account tab.
+5. Selected Unlock account.
+6. Clicked Apply, then OK.
+
+The account was successfully unlocked and restored for future lab exercises.
 
 ## Findings
 
@@ -115,6 +129,8 @@ The account was restored for future lab exercises.
 ## Conclusion
 
 Configured domain password and account lockout policies through a dedicated Group Policy Object.
+
+Verified the applied policy, tested account lockout using a dedicated domain account, reviewed Event ID 4740, and restored the test account through Active Directory Users and Computers.
 
 Verified the effective domain policy and performed a controlled lockout test using a dedicated domain account. Reviewed the resulting Security event and restored the test account through Active Directory Users and Computers.
 
