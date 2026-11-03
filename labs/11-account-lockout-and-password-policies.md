@@ -39,7 +39,7 @@ Configured the following settings under:
 
 The minimum password length audit and relax minimum password length limits settings were left Not Defined.
 
-![Password Policy Configuration](lab-11-password-policy.jpg)
+![Password Policy Configuration](screenshots/lab-11-password-policy.jpg)
 
 ## 3. Configured Account Lockout Policy
 
@@ -53,7 +53,7 @@ Configured the following settings under:
 | Account lockout duration | 15 minutes |
 | Reset account lockout counter after | 15 minutes |
 
-![Account Lockout Policy Configuration](lab-11-account-lockout-policy.jpg)
+![Account Lockout Policy Configuration](screenshots/lab-11-account-lockout-policy.jpg)
 
 ## 4. Applied and Verified Group Policy
 
@@ -69,7 +69,7 @@ Also used the following command to review the effective domain account policy:
 
 `net accounts /domain`
 
-![Effective Domain Password and Lockout Policy](lab-11-effective-domain-policy.jpg)
+![Effective Domain Password and Lockout Policy](screenshots/lab-11-effective-domain-policy.jpg)
 
 ## 5. Created a Test Domain Account
 
@@ -94,7 +94,7 @@ Get-ADUser -Identity LabLockoutTest -Properties LockedOut,BadPwdCount |
 Format-List SamAccountName,LockedOut,BadPwdCount
 ```
 
-![PowerShell Account Lockout Status](lab-11-powershell-account-lockout-status.jpg)
+![PowerShell Account Lockout Status](screenshots/lab-11-powershell-account-lockout-status.jpg)
 
 The initial check after six failed sign-in attempts returned:
 
@@ -118,7 +118,7 @@ Filtered for Event ID `4740`, which records account lockout events.
 
 Captured the event details associated with the `LabLockoutTest` account.
 
-![Account Lockout Event ID 4740](lab-11-account-lockout-event-4740.jpg)
+![Account Lockout Event ID 4740](screenshots/lab-11-account-lockout-event-4740.jpg)
 
 ## 8. Unlocked the Test Account
 
