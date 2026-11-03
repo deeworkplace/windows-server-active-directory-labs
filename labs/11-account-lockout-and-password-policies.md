@@ -81,18 +81,30 @@ A password meeting the configured password requirements was assigned.
 
 ## 6. Tested Account Lockout
 
-Used `WIN-CLIENT01` to perform controlled failed sign-in attempts against the test account.
+Used `WIN-CLIENT01` to perform controlled failed sign-in attempts against the `LabLockoutTest` account.
 
-Initially, the domain controller reported:
+### Monitored Account Status Using PowerShell
 
-- LockedOut: False
-- BadPwdCount: 6
+On `WIN-SRV-DC01`, used the Active Directory PowerShell module to check the account's lockout status and failed password count.
 
-After additional incorrect password attempts, the account's status changed to:
+Executed:
 
-- LockedOut: True
+```powershell
+Get-ADUser -Identity LabLockoutTest -Properties LockedOut,BadPwdCount |
+Format-List SamAccountName,LockedOut,BadPwdCount
+```
 
-This verified that the domain account lockout policy was functioning.
+After six failed sign-in attempts, the command returned:
+
+- SamAccountName: `LabLockoutTest`
+- LockedOut: `False`
+- BadPwdCount: `6`
+
+After another incorrect password attempt, the failed password count increased to 7. Following additional attempts, the account's status changed to:
+
+- LockedOut: `True`
+
+This confirmed that the domain account lockout policy was functioning. The `Get-ADUser` command provided a direct way to check the account's lockout status and failed password count in Active Directory.
 
 ## 7. Reviewed Security Event ID 4740
 
