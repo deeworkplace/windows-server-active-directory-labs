@@ -157,7 +157,7 @@ Deleted the temporary global security group `Lab12-Test-Access`.
 
 - Event ID 4730 – A security-enabled global group was deleted.
 
-![Security Group Deletion Event 4730](../screenshots/lab-12-group-membership-group-deletion-event-4730.jpg)
+![Security Group Deletion Event 4730](../screenshots/lab-12-group-membership-group-deleted-event-4730.jpg)
 
 ## 9. Findings
 
