@@ -58,6 +58,8 @@ Verified the applied GPO using:
 
 `gpresult /r /scope computer`
 
+![GPO Application Verification](../screenshots/lab-12-gpo-verification.jpg)
+
 Confirmed that `NorthStar - Windows Account Management Auditing` appeared under Applied Group Policy Objects.
 
 Also used the following commands to check the effective audit settings:
@@ -67,6 +69,7 @@ auditpol /get /subcategory:"User Account Management"
 
 auditpol /get /subcategory:"Security Group Management"
 ```
+![Effective Audit Policy Verification](../screenshots/lab-12-audit-policy-verification.jpg)
 
 Both audit subcategories showed Success enabled.
 
