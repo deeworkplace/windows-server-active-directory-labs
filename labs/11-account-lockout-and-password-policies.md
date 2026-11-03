@@ -94,19 +94,21 @@ Get-ADUser -Identity LabLockoutTest -Properties LockedOut,BadPwdCount |
 Format-List SamAccountName,LockedOut,BadPwdCount
 ```
 
-After six failed sign-in attempts, the command returned:
+![PowerShell Account Lockout Status](lab-11-powershell-account-lockout-status.jpg)
+
+The initial check after six failed sign-in attempts returned:
 
 - SamAccountName: `LabLockoutTest`
 - LockedOut: `False`
 - BadPwdCount: `6`
 
-After another incorrect password attempt, the failed password count increased to 7. Following additional attempts, the account's status changed to:
+Continued testing showed the failed password count increasing from 6 to 10. Once the configured threshold was reached, the account status changed to:
 
 - LockedOut: `True`
 
-This confirmed that the domain account lockout policy was functioning. The `Get-ADUser` command provided a direct way to check the account's lockout status and failed password count in Active Directory.
+The `Get-ADUser` command provided a way to monitor the account's lockout status and failed password count directly through Active Directory.
 
-![PowerShell Account Lockout Status](lab-11-powershell-account-lockout-status.jpg)
+This confirmed that the domain account lockout policy was functioning as configured.
 
 ## 7. Reviewed Security Event ID 4740
 
