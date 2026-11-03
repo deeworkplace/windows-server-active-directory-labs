@@ -106,6 +106,8 @@ After another incorrect password attempt, the failed password count increased to
 
 This confirmed that the domain account lockout policy was functioning. The `Get-ADUser` command provided a direct way to check the account's lockout status and failed password count in Active Directory.
 
+![PowerShell Account Lockout Status](lab-11-powershell-account-lockout-status.jpg)
+
 ## 7. Reviewed Security Event ID 4740
 
 Opened Event Viewer on `WIN-SRV-DC01` and reviewed the Security log.
