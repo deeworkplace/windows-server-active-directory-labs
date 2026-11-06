@@ -58,8 +58,8 @@ The curriculum is organized into five phases, progressing from Windows Server fu
 
 | Lab | Topic | Status |
 |---:|---|---|
-| 14 | Organizational Units (OUs) | Next |
-| 15 | Active Directory Security Groups | Planned |
+| 14 | Organizational Units (OUs) | Completed |
+| 15 | Active Directory Security Groups | Next |
 | 16 | File Sharing and NTFS Permissions | Planned |
 | 17 | User and Group Access Management | Planned |
 | 18 | Active Directory Troubleshooting | Planned |
