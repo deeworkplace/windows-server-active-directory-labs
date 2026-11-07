@@ -198,19 +198,54 @@ After the test, `LabLockoutTest` was added back to `GG-IT-Helpdesk` to restore t
 
 ## Key Takeaways
 
-The following concepts were covered during this lab:
+1. **Understanding Group Scopes**
+   - Global groups are commonly used to organize users by department or job role.
+   - Domain Local groups are used to assign permissions to resources within a domain.
+   - Universal groups can contain users and groups from different domains within the same forest.
 
-1. **Group scopes:** Global groups organize users, Domain Local groups are commonly used to assign permissions to resources, and Universal groups support grouping across domains within a forest.
+2. **Group Nesting and AGDLP**
+   - AGDLP stands for Accounts, Global groups, Domain Local groups, and Permissions.
+   - Users are added to Global groups, which are then nested inside Domain Local groups.
+   - Permissions are assigned to the Domain Local groups instead of individual users.
 
-2. **Group nesting and AGDLP:** Users can be placed into Global groups, which are then nested inside Domain Local groups that receive resource permissions. This makes access easier to manage.
+3. **NTFS Permissions**
+   - NTFS permissions control what users can do with files and folders, such as reading, modifying, or deleting them.
+   - Modify allows users to read, create, edit, and delete files and folders.
 
-3. **NTFS and Share permissions:** NTFS permissions control access to files and folders, while Share permissions apply when resources are accessed over the network. Both are evaluated during network access, and the more restrictive effective permission applies.
+4. **Share Permissions**
+   - Share permissions control what users can do when accessing a folder over the network.
+   - Read allows users to view and open files.
+   - Change allows users to read, create, modify, and delete files.
+   - Full Control includes the ability to change share permissions.
 
-4. **Group-based access management:** Adding or removing a user from a Global group can grant or revoke access through the existing group structure without assigning permissions directly to the individual account.
+5. **How Share and NTFS Permissions Work Together**
+   - When accessing a shared folder over the network, Windows evaluates both Share and NTFS permissions.
+   - The more restrictive effective permission determines what the user can do.
+   - For example, if Share permissions allow Read but NTFS allows Modify, the user is limited to Read access.
 
-5. **PowerShell verification:** Active Directory PowerShell commands can be used to inspect group membership, group nesting, and group scope.
+6. **The Difference Between Share and NTFS Permissions**
 
-6. **Access troubleshooting:** Successful authentication and network connectivity do not automatically mean a user has permission to access a resource. Group membership, nesting, Share permissions, NTFS permissions, and the user's logon token all need to be considered.
+   The easiest way to remember it:
+
+   - Share permissions control access through the network.
+   - NTFS permissions control access to the actual files and folders, both locally and over the network.
+   - Both can restrict network access, and the more restrictive effective permission wins.
+
+   When someone accesses a folder directly on the server, Share permissions do not apply. Only NTFS permissions determine access. This distinction was covered as a concept but was not separately tested during this lab.
+
+7. **Group-Based Access Management**
+   - Assigning permissions to groups makes access easier to manage than assigning permissions to individual users.
+   - Adding or removing a user from the appropriate group can grant or revoke access without changing the folder permissions.
+
+8. **PowerShell Verification**
+   - `Get-ADGroupMember` can display group membership.
+   - Using the `-Recursive` parameter shows nested group members.
+   - `Get-ADGroup` can verify group scopes and categories.
+
+9. **Access Troubleshooting**
+   - Group membership alone does not guarantee access.
+   - Check the user's group membership, group nesting, Share permissions, and NTFS permissions.
+   - After changing group membership, the user may need to sign out and sign back in to refresh their logon token.
 
 ## Conclusion
 
