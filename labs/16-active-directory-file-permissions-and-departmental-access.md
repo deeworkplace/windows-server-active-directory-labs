@@ -2,9 +2,9 @@
 
 ## Overview
 
-This lab focuses on configuring file sharing and managing NTFS permissions for separate department folders in an Active Directory environment. An IT and an HR folder were created, with access controlled through department-specific security groups.
+This lab focuses on configuring file sharing and managing NTFS permissions for separate department folders in an Active Directory environment. Separate IT and HR folders were created, with access controlled through department-specific security groups.
 
-The lab also included testing network access, verifying file modification permissions, and confirming that access could be removed and restored through group membership changes.
+The lab also involved testing network access, verifying file modification permissions, and confirming that access could be revoked and restored through changes to group membership.
 
 ## Lab Environment
 
@@ -29,14 +29,14 @@ The lab also included testing network access, verifying file modification permis
 
 Created a `Lab16-FilePermissions` folder under `C:\IT-Shared` on the domain controller.
 
-Two department folders were added:
+Two department folders were created:
 
 - `IT`
 - `HR`
 
 This structure provides separate locations for department files and allows permissions to be managed independently.
 
-![Department Folder Structure]\(../screenshots/lab-16-folder-structure.jpg)
+![Department Folder Structure](../screenshots/lab-16-folder-structure.jpg)
 
 ## 2. Examine NTFS Permission Inheritance
 
@@ -48,7 +48,7 @@ To separate HR access from the existing IT permissions, inheritance was disabled
 
 The inherited `DL-IT-Resources` entry was then removed from the HR folder.
 
-![HR Folder NTFS Permissions]\(../screenshots/lab-16-hr-ntfs-permissions.jpg)
+![HR Folder NTFS Permissions](../screenshots/lab-16-hr-ntfs-permissions.jpg)
 
 ## 3. Create a Department-Specific Security Group
 
@@ -61,17 +61,17 @@ Created a new security group in Active Directory to manage access to the HR fold
 
 This group provides a centralized way to assign HR folder permissions through group membership.
 
-![HR Domain Local Security Group]\(../screenshots/lab-16-hr-domain-local-group.jpg)
+![HR Domain Local Security Group](../screenshots/lab-16-hr-domain-local-group.jpg)
 
 ## 4. Configure HR NTFS Permissions
 
 Added `DL-HR-Resources` to the HR folder's NTFS permissions and assigned Modify access.
 
-This allows members of the group to create, edit, and delete files within the HR folder without granting them access through the existing IT security group.
+This allows members of the group to create, edit, and delete files within the HR folder without relying on the existing IT security group's permissions.
 
 Verified the updated permissions in the HR folder's Advanced Security Settings.
 
-![HR Permissions Verification]\(../screenshots/lab-16-hr-permissions-verification.jpg)
+![HR Permissions Verification](../screenshots/lab-16-hr-permissions-verification.jpg)
 
 ## 5. Verify IT Folder Permissions
 
@@ -81,7 +81,7 @@ The existing `DL-IT-Resources` group retained Modify access to the IT folder.
 
 No changes were made to the existing IT permission configuration.
 
-![IT Permissions Verification]\(../screenshots/lab-16-it-permissions-verification.jpg)
+![IT Permissions Verification](../screenshots/lab-16-it-permissions-verification.jpg)
 
 ## 6. Assign HR Group Membership
 
@@ -89,7 +89,7 @@ Added the test account `LabLockoutTest` as a member of `DL-HR-Resources`.
 
 This account was used to verify that HR folder access was controlled by membership in the department-specific security group.
 
-![HR Group Membership]\(../screenshots/lab-16-hr-group-membership.jpg)
+![HR Group Membership](../screenshots/lab-16-hr-group-membership.jpg)
 
 ## 7. Create a Separate HR Network Share
 
@@ -108,9 +108,9 @@ Full Control was not granted.
 
 This configuration allows members of the HR group to access and modify files through the network share, while NTFS permissions continue to control access at the folder level.
 
-![HR Share Permissions]\(../screenshots/lab-16-hr-share-permissions.jpg)
+![HR Share Permissions](../screenshots/lab-16-hr-share-permissions.jpg)
 
-![HR Network Share Created]\(../screenshots/lab-16-hr-share-created.jpg)
+![HR Network Share Created](../screenshots/lab-16-hr-share-created.jpg)
 
 ## 8. Test HR Network Access
 
@@ -124,7 +124,7 @@ Accessed the HR network share through:
 
 The account was able to open the shared folder successfully.
 
-![Client HR Share Access]\(../screenshots/lab-16-client-hr-share-access.jpg)
+![Client HR Share Access](../screenshots/lab-16-client-hr-share-access.jpg)
 
 ## 9. Test HR Modify Permissions
 
@@ -138,7 +138,7 @@ Verified that the file was created successfully and was also visible on the doma
 
 This confirmed that the account had the required Modify permissions on the HR folder.
 
-![HR Modify Access Test]\(../screenshots/lab-16-hr-modify-access-test.jpg)
+![HR Modify Access Test](../screenshots/lab-16-hr-modify-access-test.jpg)
 
 ## 10. Verify Existing IT Access
 
@@ -166,7 +166,7 @@ The existing IT access was provided through the following group membership and p
 
 This verified that the existing IT access configuration remained functional alongside the separate HR permissions.
 
-![Client IT Share Access]\(../screenshots/lab-16-client-it-share-access.jpg)
+![Client IT Share Access](../screenshots/lab-16-client-it-share-access.jpg)
 
 ## 11. Test HR Access Revocation
 
@@ -176,7 +176,7 @@ After signing out and signing back in to refresh the user's security token, atte
 
 Access was denied, confirming that HR access was controlled by membership in the department-specific security group.
 
-![HR Access Revocation Test]\(../screenshots/lab-16-hr-access-revocation-test.jpg)
+![HR Access Revocation Test](../screenshots/lab-16-hr-access-revocation-test.jpg)
 
 ## 12. Verify IT Access After HR Access Revocation
 
@@ -194,7 +194,7 @@ After signing out and signing back in, accessed the HR network share again.
 
 Access was successfully restored, confirming that HR permissions were applied through the department-specific security group.
 
-![Client HR Share Access Restored]\(../screenshots/lab-16-client-hr-share-access2.jpg)
+![Client HR Share Access Restored](../screenshots/lab-16-client-hr-share-access2.jpg)
 
 ## Key Takeaways
 
