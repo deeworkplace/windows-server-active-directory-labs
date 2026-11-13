@@ -2,206 +2,232 @@
 
 ## Overview
 
-This lab focuses on managing file and folder permissions in a Windows Server Active Directory environment. It demonstrates NTFS permission inheritance, department-specific access, network share permissions, and group-based access management.
+This lab focuses on configuring file sharing and managing NTFS permissions for separate department folders in an Active Directory environment. An IT and an HR folder were created, with access controlled through department-specific security groups.
 
-The exercise uses separate IT and HR folders to demonstrate how permissions can be configured independently to prevent unnecessary access between departments.
+The lab also included testing network access, verifying file modification permissions, and confirming that access could be removed and restored through group membership changes.
 
 ## Lab Environment
 
 - **Domain:** `corp.northstar.local`
-- **Domain Controller:** `WIN-SRV-DC01`
-- **Client Computer:** `WIN-CLIENT01`
-- **Operating System:** Windows Server 2022 and Windows 11
+- **Domain Controller:** `WIN-SRV-DC01` (Windows Server 2022)
+- **Client:** `WIN-CLIENT01` (Windows 11)
 - **Virtualization:** Oracle VirtualBox
+- **Existing Shared Folder:** `C:\IT-Shared`
 
 ## Objectives
 
-- Understand NTFS permission inheritance.
-- Examine inherited and explicit permissions.
-- Disable inheritance and convert inherited permissions into explicit permissions.
-- Configure department-specific security groups.
-- Assign NTFS and network share permissions.
-- Test folder access from a domain-joined client.
-- Verify access revocation and restoration.
-- Apply the principle of least privilege.
+- Create separate folders for IT and HR.
+- Review NTFS permission inheritance.
+- Configure department-specific NTFS permissions.
+- Create a separate network share for HR.
+- Configure share permissions using a domain local security group.
+- Test folder access and file modification from a domain client.
+- Verify that removing group membership revokes access.
+- Confirm that changes to HR access do not affect existing IT access.
 
 ## 1. Create the Department Folder Structure
 
-Created a folder structure under the existing `C:\IT-Shared` directory.
+Created a `Lab16-FilePermissions` folder under `C:\IT-Shared` on the domain controller.
 
-```text
-C:\IT-Shared
-└── Lab16-FilePermissions
-    ├── IT
-    └── HR
-```
+Two department folders were added:
 
-The IT and HR folders provide separate locations for department-specific resources.
+- `IT`
+- `HR`
 
-![Lab 16 Folder Structure]\(../screenshots/lab-16-folder-structure.jpg)
+This structure provides separate locations for department files and allows permissions to be managed independently.
+
+![Department Folder Structure]\(../screenshots/lab-16-folder-structure.jpg)
 
 ## 2. Examine NTFS Permission Inheritance
 
-Inspected the HR folder's Advanced Security Settings to identify inherited permissions.
+Reviewed the HR folder's Advanced Security Settings to identify the permissions inherited from its parent folder.
 
-The HR folder initially inherited permissions from its parent directory, `C:\IT-Shared`. This included the `DL-IT-Resources` security group with Modify access.
+The HR folder initially inherited permissions from `C:\IT-Shared`, including Modify access for `DL-IT-Resources`.
 
-This demonstrated how permissions assigned to a parent folder can propagate to its child folders.
+To separate HR access from the existing IT permissions, inheritance was disabled. The option to convert inherited permissions into explicit permissions was selected.
 
-### Disable Inheritance
+The inherited `DL-IT-Resources` entry was then removed from the HR folder.
 
-Disabled permission inheritance on the HR folder and selected the option to convert inherited permissions into explicit permissions.
-
-This preserved the existing permission entries while allowing the HR folder's permissions to be managed independently.
-
-The `DL-IT-Resources` entry was then removed from the HR folder.
-
-**Key observation:** Disabling inheritance does not automatically remove inherited permissions when they are converted into explicit entries. The entries must be reviewed and modified as needed.
+![HR Folder NTFS Permissions]\(../screenshots/lab-16-hr-ntfs-permissions.jpg)
 
 ## 3. Create a Department-Specific Security Group
 
-Created a new security group in the existing `NorthStar Users\Security Groups` OU.
+Created a new security group in Active Directory to manage access to the HR folder.
 
-| Setting | Configuration |
-|---|---|
-| Group name | `DL-HR-Resources` |
-| Group scope | Domain Local |
-| Group type | Security |
+- **Group Name:** `DL-HR-Resources`
+- **Group Scope:** Domain Local
+- **Group Type:** Security
+- **Location:** `NorthStar Users\Security Groups`
 
-The group was created to manage access to HR resources independently of the existing IT security group.
+This group provides a centralized way to assign HR folder permissions through group membership.
 
-![Lab 16 HR Domain Local Security Group]\(../screenshots/lab-16-hr-domain-local-group.jpg)
+![HR Domain Local Security Group]\(../screenshots/lab-16-hr-domain-local-group.jpg)
 
 ## 4. Configure HR NTFS Permissions
 
-Added `DL-HR-Resources` to the HR folder's Security permissions.
+Added `DL-HR-Resources` to the HR folder's NTFS permissions and assigned Modify access.
 
-Assigned the following permission:
+This allows members of the group to create, edit, and delete files within the HR folder without granting them access through the existing IT security group.
 
-| Security Group | Permission | Access Type |
-|---|---|---|
-| `DL-HR-Resources` | Modify | Allow |
+Verified the updated permissions in the HR folder's Advanced Security Settings.
 
-Verified that `DL-IT-Resources` was no longer listed in the HR folder's permission entries.
-
-The HR folder now had an independent permission configuration.
-
-![Lab 16 HR NTFS Permissions]\(../screenshots/lab-16-hr-ntfs-permissions.jpg)
-
-![Lab 16 HR Permissions Verification]\(../screenshots/lab-16-hr-permissions-verification.jpg)
+![HR Permissions Verification]\(../screenshots/lab-16-hr-permissions-verification.jpg)
 
 ## 5. Verify IT Folder Permissions
 
-Inspected the IT folder's Advanced Security Settings.
+Reviewed the IT folder's NTFS permissions to confirm that it continued to inherit access from its parent folder.
 
-The `DL-IT-Resources` group retained Modify permission inherited from `C:\IT-Shared`.
+The existing `DL-IT-Resources` group retained Modify access to the IT folder.
 
-Unlike the HR folder, the IT folder continued using its inherited permissions.
+No changes were made to the existing IT permission configuration.
 
-This demonstrated how individual child folders can have different permission configurations under the same parent directory.
-
-![Lab 16 IT Permissions Verification]\(../screenshots/lab-16-it-permissions-verification.jpg)
+![IT Permissions Verification]\(../screenshots/lab-16-it-permissions-verification.jpg)
 
 ## 6. Assign HR Group Membership
 
-Added the existing `LabLockoutTest` domain account to `DL-HR-Resources`.
+Added the test account `LabLockoutTest` as a member of `DL-HR-Resources`.
 
-The account received access through group membership rather than through an individual NTFS permission assignment.
+This account was used to verify that HR folder access was controlled by membership in the department-specific security group.
 
-The existing IT group membership was retained.
-
-![Lab 16 HR Group Membership]\(../screenshots/lab-16-hr-group-membership.jpg)
+![HR Group Membership]\(../screenshots/lab-16-hr-group-membership.jpg)
 
 ## 7. Create a Separate HR Network Share
 
-Created a separate network share for the HR folder.
+Created a separate network share named `HR-Shared`, pointing to:
 
-| Setting | Configuration |
-|---|---|
-| Folder | `C:\IT-Shared\Lab16-FilePermissions\HR` |
-| Share name | `HR-Shared` |
+`C:\IT-Shared\Lab16-FilePermissions\HR`
 
-Configured the share permissions as follows:
+Updated the share permissions by removing the default `Everyone` entry and adding `DL-HR-Resources`.
 
-| Security Group | Read | Change | Full Control |
-|---|---|---|---|
-| `DL-HR-Resources` | Allow | Allow | Not allowed |
+The group was assigned:
 
-The default `Everyone` entry was removed.
+- Change
+- Read
 
-A separate HR share allows the HR department's network access to be managed independently of the existing IT share.
+Full Control was not granted.
 
-![Lab 16 HR Share Permissions]\(../screenshots/lab-16-hr-share-permissions.jpg)
+This configuration allows members of the HR group to access and modify files through the network share, while NTFS permissions continue to control access at the folder level.
 
-![Lab 16 HR Share Created]\(../screenshots/lab-16-hr-share-created.jpg)
+![HR Share Permissions]\(../screenshots/lab-16-hr-share-permissions.jpg)
+
+![HR Network Share Created]\(../screenshots/lab-16-hr-share-created.jpg)
 
 ## 8. Test HR Network Access
 
-Signed in to `WIN-CLIENT01` using the `CORP\LabLockoutTest` account.
+Signed in to the Windows 11 client using the test account:
 
-Accessed the HR network share:
+`CORP\LabLockoutTest`
 
-```text
-\\WIN-SRV-DC01\HR-Shared
-```
+Accessed the HR network share through:
 
-The folder opened successfully.
+`\\WIN-SRV-DC01\HR-Shared`
 
-This confirmed that the account could access the HR share through its membership in `DL-HR-Resources`.
+The account was able to open the shared folder successfully.
 
-![Lab 16 Client HR Share Access]\(../screenshots/lab-16-client-hr-share-access.jpg)
+![Client HR Share Access]\(../screenshots/lab-16-client-hr-share-access.jpg)
 
 ## 9. Test HR Modify Permissions
 
-Created a text file from the client computer inside the HR network share.
+Created a test file named `HR-Access-Test.txt` from the Windows 11 client.
 
-**Test file:** `HR-Access-Test.txt`
+The file contained the following text:
 
-**File contents:**
+`HR folder Modify permission successfully tested.`
 
-```text
-HR folder Modify permission successfully tested.
-```
+Verified that the file was created successfully and was also visible on the domain controller.
 
-The file was successfully created and saved.
+This confirmed that the account had the required Modify permissions on the HR folder.
 
-Verified that the file was visible on the server under:
-
-```text
-C:\IT-Shared\Lab16-FilePermissions\HR
-```
-
-This confirmed that the configured permissions allowed the test account to create and modify files through the network share.
-
-![Lab 16 HR Modify Access Test]\(../screenshots/lab-16-hr-modify-access-test.jpg)
-
-![Lab 16 Client-Created HR File Verified on Server]\(../screenshots/lab-16-client-hr-share-access2.jpg)
+![HR Modify Access Test]\(../screenshots/lab-16-hr-modify-access-test.jpg)
 
 ## 10. Verify Existing IT Access
 
-Accessed the existing IT network share from `WIN-CLIENT01`:
+Accessed the existing IT network share from the Windows 11 client:
 
-```text
-\\WIN-SRV-DC01\IT-Shared
-```
+`\\WIN-SRV-DC01\IT-Shared`
 
-Successfully opened `IT-Test-Document.txt`.
+The test account was able to open the share and access `IT-Test-Document.txt`.
 
-The IT access configuration remained functional after the HR permission changes.
+The existing IT access was provided through the following group membership and permission structure:
 
-The existing IT access structure uses the following group relationship:
+**LabLockoutTest** (User Account)
 
-```text
-LabLockoutTest
-      |
-      v
-GG-IT-Helpdesk
-      |
-      v
-DL-IT-Resources
-      |
-      v
-IT-Shared permissions
-```
+↓ Member of
 
-![Lab 16 Client IT Share Access]\(../screenshots
+**GG-IT-Helpdesk** (Global Security Group)
+
+↓ Nested inside
+
+**DL-IT-Resources** (Domain Local Security Group)
+
+↓ Assigned permissions to
+
+**IT-Shared** (Shared Folder)
+
+This verified that the existing IT access configuration remained functional alongside the separate HR permissions.
+
+![Client IT Share Access]\(../screenshots/lab-16-client-it-share-access.jpg)
+
+## 11. Test HR Access Revocation
+
+Removed `LabLockoutTest` from the `DL-HR-Resources` group in Active Directory.
+
+After signing out and signing back in to refresh the user's security token, attempted to access the HR network share again.
+
+Access was denied, confirming that HR access was controlled by membership in the department-specific security group.
+
+![HR Access Revocation Test]\(../screenshots/lab-16-hr-access-revocation-test.jpg)
+
+## 12. Verify IT Access After HR Access Revocation
+
+After removing the test account from `DL-HR-Resources`, accessed the existing IT network share again.
+
+The account could still open the IT share and access its files.
+
+This confirmed that removing HR group membership did not affect the account's existing IT access.
+
+## 13. Restore HR Group Membership
+
+Added `LabLockoutTest` back to `DL-HR-Resources`.
+
+After signing out and signing back in, accessed the HR network share again.
+
+Access was successfully restored, confirming that HR permissions were applied through the department-specific security group.
+
+![Client HR Share Access Restored]\(../screenshots/lab-16-client-hr-share-access2.jpg)
+
+## Key Takeaways
+
+### NTFS Permissions and Inheritance
+
+- NTFS permissions determine what users can do with files and folders.
+- Child folders inherit permissions from their parent folders unless inheritance is disabled.
+- Inheritance can be disabled to apply separate permissions to specific folders.
+
+### Share Permissions
+
+- Share permissions control access to folders over the network.
+- Share permissions and NTFS permissions work together when accessing shared folders remotely.
+- The more restrictive permission determines the user's effective network access.
+
+### Group-Based Access Management
+
+- Security groups provide a centralized way to manage access.
+- Adding or removing a user from a group can grant or revoke access without changing the folder's permission entries.
+- Separate department groups help keep access to shared resources organized.
+
+### Access Verification
+
+- Tested access from a domain-joined Windows client.
+- Confirmed that the HR account could create and modify files.
+- Verified that removing HR group membership revoked HR access.
+- Confirmed that IT access remained available after HR access was removed.
+- Restored HR access by adding the account back to the appropriate group.
+
+## Conclusion
+
+This lab demonstrated how to configure separate department folders, manage NTFS permission inheritance, and create network shares with department-specific access.
+
+Access was tested from a domain-joined client to verify that users could access and modify authorized resources. Group membership was also changed to confirm that access could be revoked and restored without modifying the underlying folder permissions.
+
+The lab reinforced the importance of combining NTFS permissions, share permissions, and Active Directory security groups to manage access to shared resources.
