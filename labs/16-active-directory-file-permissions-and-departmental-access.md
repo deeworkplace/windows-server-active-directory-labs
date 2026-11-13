@@ -1,4 +1,4 @@
-# Lab 16: Active Directory File Permissions and Departmental Access Management
+# Lab 16: File Sharing and NTFS Permissions
 
 ## Overview
 
@@ -38,9 +38,7 @@ C:\IT-Shared
 
 The IT and HR folders provide separate locations for department-specific resources.
 
-**Screenshot:**
-
-- `../screenshots/lab-16-folder-structure.jpg`
+![Lab 16 Folder Structure]\(../screenshots/lab-16-folder-structure.jpg)
 
 ## 2. Examine NTFS Permission Inheritance
 
@@ -72,9 +70,7 @@ Created a new security group in the existing `NorthStar Users\Security Groups` O
 
 The group was created to manage access to HR resources independently of the existing IT security group.
 
-**Screenshot:**
-
-- `../screenshots/lab-16-hr-domain-local-group.jpg`
+![Lab 16 HR Domain Local Security Group]\(../screenshots/lab-16-hr-domain-local-group.jpg)
 
 ## 4. Configure HR NTFS Permissions
 
@@ -90,10 +86,9 @@ Verified that `DL-IT-Resources` was no longer listed in the HR folder's permissi
 
 The HR folder now had an independent permission configuration.
 
-**Screenshots:**
+![Lab 16 HR NTFS Permissions]\(../screenshots/lab-16-hr-ntfs-permissions.jpg)
 
-- `../screenshots/lab-16-hr-ntfs-permissions.jpg`
-- `../screenshots/lab-16-hr-permissions-verification.jpg`
+![Lab 16 HR Permissions Verification]\(../screenshots/lab-16-hr-permissions-verification.jpg)
 
 ## 5. Verify IT Folder Permissions
 
@@ -105,9 +100,7 @@ Unlike the HR folder, the IT folder continued using its inherited permissions.
 
 This demonstrated how individual child folders can have different permission configurations under the same parent directory.
 
-**Screenshot:**
-
-- `../screenshots/lab-16-it-permissions-verification.jpg`
+![Lab 16 IT Permissions Verification]\(../screenshots/lab-16-it-permissions-verification.jpg)
 
 ## 6. Assign HR Group Membership
 
@@ -117,9 +110,7 @@ The account received access through group membership rather than through an indi
 
 The existing IT group membership was retained.
 
-**Screenshot:**
-
-- `../screenshots/lab-16-hr-group-membership.jpg`
+![Lab 16 HR Group Membership]\(../screenshots/lab-16-hr-group-membership.jpg)
 
 ## 7. Create a Separate HR Network Share
 
@@ -140,10 +131,9 @@ The default `Everyone` entry was removed.
 
 A separate HR share allows the HR department's network access to be managed independently of the existing IT share.
 
-**Screenshots:**
+![Lab 16 HR Share Permissions]\(../screenshots/lab-16-hr-share-permissions.jpg)
 
-- `../screenshots/lab-16-hr-share-permissions.jpg`
-- `../screenshots/lab-16-hr-share-created.jpg`
+![Lab 16 HR Share Created]\(../screenshots/lab-16-hr-share-created.jpg)
 
 ## 8. Test HR Network Access
 
@@ -159,9 +149,7 @@ The folder opened successfully.
 
 This confirmed that the account could access the HR share through its membership in `DL-HR-Resources`.
 
-**Screenshot:**
-
-- `../screenshots/lab-16-client-hr-share-access.jpg`
+![Lab 16 Client HR Share Access]\(../screenshots/lab-16-client-hr-share-access.jpg)
 
 ## 9. Test HR Modify Permissions
 
@@ -185,10 +173,9 @@ C:\IT-Shared\Lab16-FilePermissions\HR
 
 This confirmed that the configured permissions allowed the test account to create and modify files through the network share.
 
-**Screenshots:**
+![Lab 16 HR Modify Access Test]\(../screenshots/lab-16-hr-modify-access-test.jpg)
 
-- `../screenshots/lab-16-hr-modify-access-test.jpg`
-- `../screenshots/lab-16-client-hr-share-access2.jpg`
+![Lab 16 Client-Created HR File Verified on Server]\(../screenshots/lab-16-client-hr-share-access2.jpg)
 
 ## 10. Verify Existing IT Access
 
@@ -217,91 +204,4 @@ DL-IT-Resources
 IT-Shared permissions
 ```
 
-**Screenshot:**
-
-- `../screenshots/lab-16-client-it-share-access.jpg`
-
-## 11. Test HR Access Revocation
-
-Temporarily removed `LabLockoutTest` from `DL-HR-Resources`.
-
-Signed out of the client computer and signed back in to refresh the user's logon access token.
-
-Attempted to access:
-
-```text
-\\WIN-SRV-DC01\HR-Shared
-```
-
-Windows returned an access-denied message because the account was no longer a member of the group assigned to the HR folder and share.
-
-**Screenshot:**
-
-- `../screenshots/lab-16-hr-access-revocation-test.jpg`
-
-## 12. Verify IT Access After HR Access Revocation
-
-While HR access was denied, accessed the existing IT network share again.
-
-The account could still open `IT-Test-Document.txt`.
-
-This demonstrated that removing access from the HR group did not affect the account's existing IT permissions.
-
-The HR and IT folder permissions operated independently.
-
-## 13. Restore HR Group Membership
-
-Added `LabLockoutTest` back to `DL-HR-Resources`.
-
-Signed out and back in to refresh the logon access token.
-
-Successfully accessed `HR-Shared` again, confirming that HR access was restored.
-
-The final lab configuration retains the test account's membership in both department access groups.
-
-## Key Takeaways
-
-### NTFS Permission Inheritance
-
-- Child folders normally inherit permissions from their parent folders.
-- Inherited permissions can be converted into explicit permissions.
-- Removing inheritance does not automatically remove permissions when the conversion option is selected.
-- Explicit permissions allow individual folders to have different access configurations.
-
-### Share Permissions vs. NTFS Permissions
-
-- Share permissions control access through a network share.
-- NTFS permissions control access to files and folders at the file system level.
-- Network access evaluates both permission types.
-- The more restrictive effective permission determines the resulting network access.
-
-### Group-Based Access Management
-
-- Security groups simplify permission assignments.
-- Users receive access through their group memberships.
-- Domain Local groups can be used to assign permissions to resources within their domain.
-- Group membership changes can grant or revoke access without changing the folder's permission configuration.
-
-### Least Privilege
-
-- Employees should receive only the access necessary for their responsibilities.
-- Separate departmental groups help prevent unnecessary access to other departments' resources.
-- Removing a user from one department's access group should not affect unrelated permissions.
-
-### Access Troubleshooting
-
-When a user cannot access a shared folder, verify:
-
-1. The user's Active Directory group memberships.
-2. Group nesting and security group configuration.
-3. NTFS permissions.
-4. Network share permissions.
-5. Whether the user has signed out and back in after a membership change.
-
-## Conclusion
-
-This lab demonstrated how Active Directory security groups, NTFS permissions, and network share permissions work together to manage departmental file access.
-
-The practical tests showed that a user could access and modify HR resources through group membership, lose HR access when removed from the corresponding group, and retain IT access independently.
-
-These concepts are important for managing user access, maintaining resource security, and applying least-privilege principles in an IT environment.
+![Lab 16 Client IT Share Access]\(../screenshots
